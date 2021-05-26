@@ -19,7 +19,8 @@
                 messageD: document.querySelector('#scroll-section-0 .main-message.d'),
             },
             values: {
-                messageA_opacity: [0, 1]
+                messageA_opacity: [0, 1, { start: 0.1, end: 0.2}],
+                messageB_opacity: [0, 1, { start: 0.3, end: 0.4}],
             }
         },
         {   
@@ -74,11 +75,27 @@
     function calcValues(values, currentYOffset) { // 각 섹션마다 얼만큼의 비율로 스크롤 됐는지 중요. 왜냐 -> yOffset은 섹션과 상관없이 독자적으로 움직이는 높이 값 Y이다섹션마다 텍스트 애니메이션 기준이 1번 섹션으로 예를 들면 이 섹션에서의 애니메이션은 1번 섹션이 활성화 됐을 때만이다.
         let rv;
         //현재 씬(스크롤섹션)에서 스크롤 된 범위를 비율로 구하기
-        let scrollRatio = currentYOffset / sceneInfo[currentScene].scrollHeight;
-      
-        rv = scrollRatio * (values[1]-values[0]) + values[0];
-      
-        return rv;
+        const scrollHeight = sceneInfo[currentScene].scrollHeight;
+        const scrollRatio = currentYOffset / scrollHeight;
+        
+        if (values.length === 3) {
+            // start ~ end 사이에 애니메이션 실행
+            const partScrollStart = values[2].start * scrollHeight;
+            const partScrollEnd = values[2].end * scrollHeight;
+            const partScrollHeight = partScrollEnd - partScrollStart;
+
+            if (currentYOffset >= partScrollStart && currentYOffset <= partScrollEnd){
+                rv = (currentYOffset - partScrollStart) / partScrollHeight * (values[1] - values[0]) + values[0]; // 그림 참조
+            } else if (currentYOffset < partScrollStart){
+                rv = values[0];
+            } else if (currentYOffset > partScrollEnd){
+                rv = values[1];
+            }
+        } else {
+            console.log((values[1] - values[0]) + values[0]);
+            rv = scrollRatio * (values[1] - values[0]) + values[0];
+        }
+         return rv;
     }
 
     function playAnimation() {
@@ -130,7 +147,7 @@
             document.body.setAttribute('id', `show-scene-${currentScene}`);
         }
 
-        if (enterNewScene) return;
+        if (enterNewScene) return; // 역방향 스크롤 했을 때 씬 번호가 높은 수에서 낮은 수로 역행했을 때 경계값에서 스크롤 값이 (-) 값이 나오는 것을 방지
         
         playAnimation();
     }
