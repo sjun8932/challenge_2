@@ -1,6 +1,6 @@
 (() => {
 
-    let yOffset = 0; // window.pageYOffset 대신 쓸 변수 (이렇게 하면 편하니까) , 전체 문서에서의 스크롤 위치를 의미한다. 
+    let yOffset = 0; // window.pageYOffset 대신 쓸 변수 (이렇게 하면 편하니까) , 전체 문서에서의 스크롤 위치를 의미한다. 현재 씬이 몇번인지엔 상관 없는 값
     let prevScrollHeight = 0; // 현재 스크롤 위치 (yOffset)보다 이전에 위치한 스크롤 섹션들의 스크롤 높이의 합
     let currentScene = 0; //현재 활성화 된 (눈 앞에 보이는) 씬 (scroll-section)
 
@@ -70,8 +70,14 @@
         document.body.setAttribute('id', `show-scene-${currentScene}`);
     }
 
-    function calcValues(values, currentYOffset) { // 각 섹션마다 얼만큼의 비율로 스크롤 됐는지 중요. 왜냐 -> 섹션마다 텍스트 애니메이션 기준이 1번 섹션으로 예를 들면 이 섹션에서의 애니메이션은 1번 섹션이 활성화 됐을 때만이다.
-
+    function calcValues(values, currentYOffset) { // 각 섹션마다 얼만큼의 비율로 스크롤 됐는지 중요. 왜냐 -> yOffset은 섹션과 상관없이 독자적으로 움직이는 높이 값 Y이다섹션마다 텍스트 애니메이션 기준이 1번 섹션으로 예를 들면 이 섹션에서의 애니메이션은 1번 섹션이 활성화 됐을 때만이다.
+        let rv;
+        //현재 씬(스크롤섹션)에서 스크롤 된 범위를 비율로 구하기
+        let scrollRatio = currentYOffset / sceneInfo[currentScene].scrollHeight;
+      
+        rv = scrollRatio * (values[1]-values[0]) + values[0];
+      
+        return rv;
     }
 
     function playAnimation() {
@@ -79,14 +85,11 @@
         const values = sceneInfo[currentScene].values;
         const currentYOffset = yOffset - prevScrollHeight;
 
-        console.log(currentScene, currentYOffset);
-
         switch (currentScene) {
             case 0:
                 //console.log('0 play');
-                let messageA_opacity_0 = values.messageA_opacity[0];
-                let messageA_opacity_1 = values.messageA_opacity[1];
-                console.log( calcValues(values.messageA_opacity, currentYOffset));
+                let messageA_opacity_in  = calcValues(values.messageA_opacity, currentYOffset);
+                objs.messageA.style.opacity = messageA_opacity_in;
                 break;
 
             case 1:
