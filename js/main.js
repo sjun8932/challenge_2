@@ -3,6 +3,7 @@
     let yOffset = 0; // window.pageYOffset 대신 쓸 변수 (이렇게 하면 편하니까) , 전체 문서에서의 스크롤 위치를 의미한다. 현재 씬이 몇번인지엔 상관 없는 값
     let prevScrollHeight = 0; // 현재 스크롤 위치 (yOffset)보다 이전에 위치한 스크롤 섹션들의 스크롤 높이의 합
     let currentScene = 0; //현재 활성화 된 (눈 앞에 보이는) 씬 (scroll-section)
+    let enterNewScene = false; // 새로운 scene이 시작되는 순간 true
 
     const sceneInfo = [
         {
@@ -85,11 +86,14 @@
         const values = sceneInfo[currentScene].values;
         const currentYOffset = yOffset - prevScrollHeight;
 
+        console.log(currentScene);
+
         switch (currentScene) {
             case 0:
                 //console.log('0 play');
                 let messageA_opacity_in  = calcValues(values.messageA_opacity, currentYOffset);
                 objs.messageA.style.opacity = messageA_opacity_in;
+                console.log(messageA_opacity_in);
                 break;
 
             case 1:
@@ -106,23 +110,28 @@
         }
     }
 
-    function scrollLoop() { 
+    function scrollLoop() {
+        enterNewScene = false;
         prevScrollHeight = 0;
         for (let i = 0; i < currentScene; i++) {
             prevScrollHeight += sceneInfo[i].scrollHeight;
         }
 
         if (yOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight) { //활성화 씬 png 참조
+            enterNewScene = true;
             currentScene++;
             document.body.setAttribute('id', `show-scene-${currentScene}`);
         }
 
         if (yOffset < prevScrollHeight) {
+            enterNewScene = true;
             if (currentScene === 0) return; // current씬이 -값이 되는 것을 방지 (모바일 또는 ios 기기)
             currentScene--;
             document.body.setAttribute('id', `show-scene-${currentScene}`);
         }
 
+        if (enterNewScene) return;
+        
         playAnimation();
     }
 
