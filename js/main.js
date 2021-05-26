@@ -51,6 +51,7 @@
         }
 
         yOffset = window.pageYOffset;
+
         let totalScrollHeight = 0; //페이지가 특정 위치에서 새로고침(F5) 가 되었을 경우를 totalScrollHeight와 yOffset과의 관계설정으로 나타낸다.
         for (let i = 0; i <sceneInfo.length; i++) {
             totalScrollHeight += sceneInfo[i].scrollHeight;
@@ -70,16 +71,14 @@
 
         if (yOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight) { //활성화 씬 png 참조
             currentScene++;
-            //document.body.setAttribute('id', `show-scene-${currentScene}`);
+            document.body.setAttribute('id', `show-scene-${currentScene}`);
         }
 
         if (yOffset < prevScrollHeight) {
             if (currentScene === 0) return; // current씬이 -값이 되는 것을 방지 (모바일 또는 ios 기기)
             currentScene--;
-            //document.body.setAttribute('id', `show-scene-${currentScene}`);
+            document.body.setAttribute('id', `show-scene-${currentScene}`);
         }
-
-        document.body.setAttribute('id', `show-scene-${currentScene}`);
     }
 
     window.addEventListener('scroll', () => {
