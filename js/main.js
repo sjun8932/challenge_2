@@ -16,9 +16,14 @@
                 messageA: document.querySelector('#scroll-section-0 .main-message.a'),
                 messageB: document.querySelector('#scroll-section-0 .main-message.b'),
                 messageC: document.querySelector('#scroll-section-0 .main-message.c'),
-                messageD: document.querySelector('#scroll-section-0 .main-message.d')
+                messageD: document.querySelector('#scroll-section-0 .main-message.d'),
+                canvas: document.querySelector('#video-canvas-0'),
+                context: document.querySelector('#video-canvas-0'),
+                videoImages: []
             },
             values: {
+                videoImageCount: 300,
+                videoSequence: [0, 299],
                 messageA_opacity_in: [0, 1, { start: 0.1, end: 0.2 }],
                 messageB_opacity_in: [0, 1, { start: 0.3, end: 0.4 }],
                 messageC_opacity_in: [0, 1, { start: 0.5, end: 0.6 }],
@@ -43,8 +48,7 @@
             // heightNum: 5, // type normal에서는 필요 없음 
             scrollHeight: 0,
             objs: {
-                container: document.querySelector('#scroll-section-1'),
-                content: document.querySelector('#scroll-section-1 .description')
+                container: document.querySelector('#scroll-section-1')
             }
         },
         {   
@@ -74,7 +78,11 @@
                 messageB_opacity_out: [1, 0, { start: 0.68, end: 0.73 }],
                 messageC_opacity_out: [1, 0, { start: 0.95, end: 1 }],
                 pinB_scaleY: [0.5, 1, { start: 0.6, end: 0.65 }],
-                pinC_scaleY: [0.5, 1, { start: 0.87, end: 0.92 }]
+                pinC_scaleY: [0.5, 1, { start: 0.87, end: 0.92 }],
+                pinB_opacity_in: [0, 1, {start: 0.5, end: 0.55}],
+                pinC_opacity_in: [0, 1, {start: 0.72, end: 0.77}],
+                pinB_opacity_out: [1, 0, {start: 0.58, end: 0.63}],
+                pinC_opacity_out: [1, 0, {start: 0.85, end: 0.9}]
             }
         },
         {   
@@ -91,6 +99,17 @@
             }
         }       
     ];
+
+    function setCanvasImages() {
+        let imgElem;
+        for (let i=0; i < sceneInfo[0].values.videoImageCount; i++){
+            imgElem = new Image();
+            imgElem.src = `./video/001/IMG_${6726 + i}.jpg`;
+            sceneInfo[0].objs.videoImages.push(imgElem);
+        }
+        console.log(sceneInfo[0].objs.videoImages);
+    }
+    setCanvasImages();
     
     function setLayout() {
         // 각 스크롤 섹션의 높이 세팅
