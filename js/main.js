@@ -18,12 +18,12 @@
                 messageC: document.querySelector('#scroll-section-0 .main-message.c'),
                 messageD: document.querySelector('#scroll-section-0 .main-message.d'),
                 canvas: document.querySelector('#video-canvas-0'),
-                context: document.querySelector('#video-canvas-0'),
+                context: document.querySelector('#video-canvas-0').getContext('2d'),
                 videoImages: []
             },
             values: {
                 videoImageCount: 300,
-                videoSequence: [0, 299],
+                imageSequence: [0, 299],
                 messageA_opacity_in: [0, 1, { start: 0.1, end: 0.2 }],
                 messageB_opacity_in: [0, 1, { start: 0.3, end: 0.4 }],
                 messageC_opacity_in: [0, 1, { start: 0.5, end: 0.6 }],
@@ -107,7 +107,7 @@
             imgElem.src = `./video/001/IMG_${6726 + i}.jpg`;
             sceneInfo[0].objs.videoImages.push(imgElem);
         }
-        console.log(sceneInfo[0].objs.videoImages);
+        //console.log(sceneInfo[0].objs.videoImages);
     }
     setCanvasImages();
     
@@ -133,6 +133,9 @@
             }
         }
         document.body.setAttribute('id', `show-scene-${currentScene}`);
+
+        const heightRatio = window.innerHeight/ 1080;
+        sceneInfo[0].objs.canvas.style.transform = `translate3d(-50%, -50%, 0) scale(${heightRatio})`;
     }
 
     function calcValues(values, currentYOffset) { // 각 섹션마다 얼만큼의 비율로 스크롤 됐는지 중요. 왜냐 -> yOffset은 섹션과 상관없이 독자적으로 움직이는 높이 값 Y이다섹션마다 텍스트 애니메이션 기준이 1번 섹션으로 예를 들면 이 섹션에서의 애니메이션은 1번 섹션이 활성화 됐을 때만이다.
@@ -170,6 +173,9 @@
         switch (currentScene) {
             case 0:
                 //console.log('0 play');
+                let sequence = Math.round(calcValues(values.imageSequence, currentYOffset));
+                objs.context.drawImage(objs.videoImages[sequence], 0, 0);
+
                 if (scrollRatio <= 0.22){
                     //in
                     objs.messageA.style.opacity = calcValues(values.messageA_opacity_in, currentYOffset);
