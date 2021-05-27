@@ -24,6 +24,7 @@
             values: {
                 videoImageCount: 300,
                 imageSequence: [0, 299],
+                canvas_opacity: [1, 0, { start: 0.9, end: 1 }],
                 messageA_opacity_in: [0, 1, { start: 0.1, end: 0.2 }],
                 messageB_opacity_in: [0, 1, { start: 0.3, end: 0.4 }],
                 messageC_opacity_in: [0, 1, { start: 0.5, end: 0.6 }],
@@ -175,6 +176,7 @@
                 //console.log('0 play');
                 let sequence = Math.round(calcValues(values.imageSequence, currentYOffset));
                 objs.context.drawImage(objs.videoImages[sequence], 0, 0);
+                objs.canvas.style.opacity = calcValues(values.canvas_opacity, currentYOffset);
 
                 if (scrollRatio <= 0.22){
                     //in
@@ -292,7 +294,10 @@
         scrollLoop();
     });
     // window.addEventListener('DOMContentLoaded', setLayout);
-    window.addEventListener('load', setLayout); // DomContentload와 load의 차이 : load는 웹페이지에 있는 모든 리소스를 다운받고 나서야 작동 Domcontentload는 html 돔구조만 로드되면 실행됨. 그래서 후자가 좀더 빨리 실행됨
+    window.addEventListener('load', () => {
+        setLayout();
+        sceneInfo[0].objs.context.drawImage(sceneInfo[0].objs.videoImages[0], 0, 0);
+    }); // DomContentload와 load의 차이 : load는 웹페이지에 있는 모든 리소스를 다운받고 나서야 작동 Domcontentload는 html 돔구조만 로드되면 실행됨. 그래서 후자가 좀더 빨리 실행됨
     window.addEventListener('resize', setLayout);
     setLayout(); // 이 함수는 --> 0. 레이아웃을 초기화 한다. 1. 각 sceneInfo 배열에 있는 각 scene의 스크롤 높이를 잡아주고 실제 html의 스크롤 높이에 세팅을 한다
 
